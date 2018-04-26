@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.9)
 project(hnsw_index)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-std=c++17 -O0 -fopenmp")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp")
 
 include_directories(PYTHON_INCLUDE_DIR)
 include_directories(./include)
 
 add_executable(tests hnsw/tests.cpp)
+add_executable(benchmarks hnsw/benchmarks.cpp)
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)

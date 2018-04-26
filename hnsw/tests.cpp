@@ -54,8 +54,8 @@ std::vector<Index::SearchResult> linear_search(
 
 
 int main() {
-    size_t n_dim = 300;
-    size_t n_vectors = 10000;
+    const size_t n_dim = 300;
+    const size_t n_vectors = 10000;
 
     auto index = hnsw::Index<Key, Vector, Distance>();
     LinearIndex linear_index;
