@@ -1,6 +1,7 @@
+#include <cassert>
+#include <ctime>
 #include <random>
 #include "index.hpp"
-#include <cassert>
 
 using Vector = std::vector<float>;
 using Distance = hnsw::CosineSimilarity;
@@ -10,6 +11,7 @@ using LinearIndex = std::vector<std::pair<Key, Vector>>;
 
 const std::string EMBEDDINGS_FILENAME = "embeddings.txt";
 const std::string INDICES_FILENAME = "indices.txt";
+
 
 std::vector<Index::SearchResult> linear_search(
         const Vector &target,
@@ -29,6 +31,7 @@ std::vector<Index::SearchResult> linear_search(
     }
     return result;
 }
+
 
 Vector read_vector(std::istream &embeddings, size_t n_dim) {
     Vector result(n_dim);
@@ -54,7 +57,7 @@ int main() {
               "Dimensions: " << n_dim << std::endl;
 
     // TODO debug
-    n_vectors = 2000;
+    n_vectors = n_vectors - 1;
 
     std::vector<Vector> vectors(n_vectors);
     std::vector<u_int32_t> keys(n_vectors);
@@ -74,33 +77,47 @@ int main() {
     embeddings.close();
     indices.close();
 
+    // Initialize timings
+    std::clock_t start;
+    double duration;
+
+    start = std::clock();
     LinearIndex linear_index;
     for (u_int32_t i = 0; i < n_vectors; ++i) {
         linear_index.emplace_back(std::pair(keys[i], vectors[i]));
     }
-    std::cout << "Linear index created!\n" << std::endl;
+    duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "Linear index created in " << duration << " seconds" << std::endl;
 
+    start = std::clock();
     auto index = hnsw::Index<Key, Vector, Distance>();
     for (u_int32_t i = 0; i < n_vectors; ++i) {
         index.insert(keys[i], vectors[i]);
     }
-    std::cout << "HNSW index created!\n" << std::endl;
+    duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "HNSW index created in " << duration << " seconds" << std::endl;
+    std::cout << std::endl;
 
     std::cout << "HNSW index results:" << std::endl;
     std::cout << "True key:" << target_key << std::endl;
 
+    start = std::clock();
     auto query = index.search(target_vector, 5);
     for (const auto &result : query) {
         std::cout << result.key << " " << result.distance << std::endl;
     }
+    duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "Took " << duration << " seconds" << std::endl;
     std::cout << std::endl;
 
     std::cout << "Linear index results:" << std::endl;
+    start = std::clock();
     auto linear_query = linear_search(target_vector, linear_index, 5);
     for (const auto &result : linear_query) {
         std::cout << result.key << " " << result.distance << std::endl;
     }
+    duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+    std::cout << "Took " << duration << " seconds" << std::endl;
 
     return 0;
-
 }
