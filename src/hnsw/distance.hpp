@@ -9,9 +9,9 @@ template<typename T>
 T l2_square_distance(const T *left, const T *right, size_t dim) {
     T sum = 0;
 
-#pragma omp assert simd
+    #pragma omp simd
     for (size_t i = 0; i < dim; ++i) {
-        auto diff = left[i] - right[i];
+        T diff = left[i] - right[i];
         sum += diff * diff;
     }
 
@@ -24,7 +24,7 @@ T cosine_similarity(const T *left, const T *right, size_t dim) {
     T sum_left = 0;
     T sum_right = 0;
 
-#pragma omp assert simd
+    #pragma omp simd
     for (size_t i = 0; i < dim; ++i) {
         sum += left[i] * right[i];
         sum_left += left[i] * left[i];
@@ -39,7 +39,9 @@ T cosine_similarity(const T *left, const T *right, size_t dim) {
         }
     }
 
-    return 1.0f - std::max(T(-1.0), std::min(T(1.0), sum / (std::sqrt(sum_left) * std::sqrt(sum_right))));
+    T cosine_distance = sum / (std::sqrt(sum_left) * std::sqrt(sum_right));
+
+    return T(1.0) - std::max(T(-1.0), std::min(T(1.0), cosine_distance));
 }
 
 }

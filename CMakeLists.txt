@@ -9,21 +9,3 @@ include_directories(src/third_party)
 
 add_executable(tests src/hnsw/tests.cpp)
 add_executable(benchmarks src/hnsw/benchmarks.cpp)
-
-#set(Boost_USE_STATIC_LIBS OFF)
-#set(Boost_USE_MULTITHREADED ON)
-#set(Boost_USE_STATIC_RUNTIME OFF)
-#FIND_PACKAGE(Boost REQUIRED COMPONENTS system)
-#
-#if(Boost_FOUND)
-#    message(STATUS "Boost Found!")
-#    message(STATUS "Boost is ${BOOST_ROOT}")
-#    message(STATUS "Boost directories found at ${Boost_INCLUDE_DIRS}")
-#    message(STATUS "Boost libraries found at ${Boost_LIBRARY_DIRS}")
-#    message(STATUS "Boost libraries prefix is ${Boost_LIB_PREFIX}")
-#    message(STATUS "Boost component libraries to be linked are ${Boost_LIBRARIES}")
-#    message(STATUS "Boost version found is ${Boost_VERSION}")
-#
-#    include_directories(${Boost_INCLUDE_DIRS})
-#    target_link_libraries(tests ${Boost_LIBRARIES})
-#endif()

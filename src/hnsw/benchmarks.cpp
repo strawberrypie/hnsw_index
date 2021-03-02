@@ -47,8 +47,8 @@ int main() {
     std::ifstream embeddings(EMBEDDINGS_FILENAME);
     std::ifstream indices(INDICES_FILENAME);
 
-    size_t n_vectors = 0, n_dim = 0;
-    embeddings >> n_vectors >> n_dim;
+    size_t n_vectors = 0, n_dim = 0, n_neighbors = 0;
+    embeddings >> n_vectors >> n_dim >> n_neighbors;
 
     size_t n_indices = 0;
     indices >> n_indices;
@@ -103,7 +103,7 @@ int main() {
     std::cout << "True key:" << target_key << std::endl;
 
     start = std::clock();
-    auto query = index.search(target_vector, 5);
+    auto query = index.search(target_vector, n_neighbors);
     for (const auto &result : query) {
         std::cout << result.key << " " << result.distance << std::endl;
     }
@@ -113,7 +113,7 @@ int main() {
 
     std::cout << "Linear index results:" << std::endl;
     start = std::clock();
-    auto linear_query = linear_search(target_vector, linear_index, 5);
+    auto linear_query = linear_search(target_vector, linear_index, n_neighbors);
     for (const auto &result : linear_query) {
         std::cout << result.key << " " << result.distance << std::endl;
     }

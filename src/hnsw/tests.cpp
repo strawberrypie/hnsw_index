@@ -56,6 +56,7 @@ std::vector<Index::SearchResult> linear_search(
 int main() {
     const size_t n_dim = 300;
     const size_t n_vectors = 5000;
+    const size_t n_neighbors = 10;
 
     auto index = hnsw::Index<Key, Vector, Distance>();
     LinearIndex linear_index;
@@ -70,14 +71,14 @@ int main() {
     auto target_vector = generate_unit_sphere_vector(n_dim);
 
     std::cout << "HNSW index results:" << std::endl;
-    auto query = index.search(target_vector, 5);
+    auto query = index.search(target_vector, n_neighbors);
     for (const auto& result : query) {
         std::cout << result.key << " " << result.distance << std::endl;
     }
     std::cout << std::endl;
 
     std::cout << "Linear index results:" << std::endl;
-    auto linear_query = linear_search(target_vector, linear_index, 5);
+    auto linear_query = linear_search(target_vector, linear_index, n_neighbors);
     for (const auto& result : linear_query) {
         std::cout << result.key << " " << result.distance << std::endl;
     }

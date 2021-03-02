@@ -3,6 +3,7 @@
 #include <pybind11/numpy.h>
 #include "index.hpp"
 
+
 namespace py = pybind11;
 
 using KeyType = int64_t;
@@ -86,25 +87,23 @@ public:
         index.load_index(file_path);
     }
 
-    IndexType index;
-    size_t dim;
+  size_t dim;
+  IndexType index;
 };
 
 using BridgeType = HNSWIndex;
 
-PYBIND11_PLUGIN(hnsw_index) {
-    py::module m("hnsw_index");
+PYBIND11_MODULE(hnsw_index, m) {
 
     py::class_<BridgeType>(m, "HNSWIndex")
-            .def(py::init<const int>(), py::arg("dim"))
-            .def("knn_query", &BridgeType::knn_query_return_numpy, py::arg("data"), py::arg("k") = 1)
-            .def("add_items", &BridgeType::add_items, py::arg("data"), py::arg("ids"))
-            .def("save_index", &BridgeType::save_index, py::arg("file_path"))
-            .def("load_index", &BridgeType::load_index, py::arg("file_path"))
-            .def("__repr__",
-                 [](const BridgeType &a) {
-                     return "<HNSW-lib index>";
-                 }
-            );
-    return m.ptr();
+        .def(py::init<const int>(), py::arg("dim"))
+        .def("knn_query", &BridgeType::knn_query_return_numpy, py::arg("data"), py::arg("k") = 1)
+        .def("add_items", &BridgeType::add_items, py::arg("data"), py::arg("ids"))
+        .def("save_index", &BridgeType::save_index, py::arg("file_path"))
+        .def("load_index", &BridgeType::load_index, py::arg("file_path"))
+        .def("__repr__",
+             [](const BridgeType &a) {
+                 return "<HNSW-lib index>";
+             }
+        );
 }
